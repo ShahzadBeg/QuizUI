@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Card,
@@ -11,22 +11,38 @@ import useForm from "../hooks/useForm";
 
 import Center from "./Center";
 import { ENDPOINTS, createAPIEndpoint } from "../api";
+import useStateContext from "../hooks/useStateContext";
+import { Link, useNavigate } from "react-router-dom";
+import { grey } from "@mui/material/colors";
 
 const getFreshModel = () => ({
-  userName: "",
-  password: "",
+  userName: "user@example.com",
+  password: "Iphone@123",
 });
 
 export const Login = () => {
+  const navigate = useNavigate();
+  const { context, setContext, resetContext } = useStateContext();
   const { values, setValues, errors, setErrors, handleInputChange } =
     useForm(getFreshModel);
+
+  useEffect(() => {
+    resetContext();
+  });
 
   const login = (e) => {
     e.preventDefault();
     if (validate())
       createAPIEndpoint(ENDPOINTS.login)
         .post(values)
-        .then((res) => console.log(res))
+        .then((res) => {
+          setContext({
+            token: res.data.token,
+            displayUserName: res.data.displayUserName,
+            role: res.data.role,
+          });
+          navigate("/quiz");
+        })
         .catch((err) => console.log(err));
   };
 
@@ -88,6 +104,10 @@ export const Login = () => {
                 Start
               </Button>
             </form>
+            <Typography variant="h9" sx={{ color: grey[1000] }}>
+              Not a current user ?
+            </Typography>
+            <Link to="/register">Click here</Link>
           </Box>
         </CardContent>
       </Card>
