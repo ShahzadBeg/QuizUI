@@ -2,13 +2,23 @@ import { AppBar, Button, Container, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import useStateContext from "../hooks/useStateContext";
+import { ENDPOINTS, createAPIEndpoint } from "../api";
 
 const Layout = () => {
   const { resetContext, context } = useStateContext();
   const navigate = useNavigate();
   const logOut = () => {
-    resetContext();
-    navigate("/");
+    createAPIEndpoint(ENDPOINTS.signOut)
+      .fetch()
+      .then((res) => {
+        if (res.data.success) {
+          resetContext();
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
   };
   return (
     <>

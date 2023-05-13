@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   getResult: "quiz/getResult",
   createRegister: "auth/register",
   userScore: "quiz/score",
+  signOut: "auth/signout",
 };
 
 export const createAPIEndpoint = (endpoint) => {
